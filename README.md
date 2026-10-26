@@ -30,3 +30,10 @@ The trade-off: the parser is tolerant on input (it accepts missing indices, BOMs
 - The `index` field comes verbatim from the file, including gaps and duplicates. Blocks with no index get a synthetic 1-based number. `serialize` ignores the stored index and always writes 1..N.
 - Line endings are normalised to `\n` on parse; the serializer always emits `\n`.
 - Empty cues (no text lines) are preserved on parse and emitted without a text line on serialize.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
